@@ -20,4 +20,8 @@ class Expenses extends Model
         'unit_price',
         'total',
     ];
+     public function category()
+    {
+        return $this->belongsTo(expenceCategory::class, 'cat_id');
+    }
 }

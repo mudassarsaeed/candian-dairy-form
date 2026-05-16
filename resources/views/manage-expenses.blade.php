@@ -184,7 +184,7 @@
                     @foreach ($expenses as $expense)
                     <tr>
                         <td>{{$expense->id}}</td>
-                        <td>{{$expense->cat_id}}</td>
+                        <td>{{ $expense->category->name ?? 'N/A' }}</td>
                         <td>{{$expense->order_date}}</td>
                         <td>{{$expense->arrival_date}}</td>
                         <td>{{$expense->ending_date}}</td>
