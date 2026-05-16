@@ -25,10 +25,12 @@
                     <div class="row">
                     <div class="mb-3 col-lg-6">
                         <label>Category:</label><br>
-                        <input type="text" class="form-control" name="cat" required placeholder="Enter Category" data-type="add">
-                        @error('category')
-                        <span class="text-danger">{{$message}}</span>
-                        @enderror
+                         <select name="cat" id="cat" style="width: 160px;">
+                            <option value="" selected>Select Category</option>
+                            @foreach ($expensecategories   as $expensecategory )
+                                <option value="{{$expensecategory->id}}">{{$expensecategory->name}}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="mb-3 col-lg-6">
                         <label>Order Date:</label>
@@ -103,13 +105,13 @@
                        <div class="row">
                         
                         
-                        {{-- <div class="mb-3 col-lg-6">
-                            <label for="exampleFormControlInput1" class="form-label">Unit Price</label>
+                        <div class="mb-3 col-lg-6">
+                            <label for="exampleFormControlInput1" class="form-label">Upload Receipt</label>
                             <input type="file" name="file" />
                                 @error('logo')
                                 <span class="text-danger">{{$message}}</span>
                                     @enderror                       
-                        </div> --}}
+                        </div>
                                 
                     </div>
 
@@ -172,7 +174,8 @@
                         <th>Bags/Bails</th>
                         <th>Unit Price</th>
                         <th>Total</th>
-                        <th colspan="2">Action</th>
+                        <th>Receipt</th>
+                        {{-- <th colspan="2">Action</th> --}}
                        
 
                     </tr>
@@ -190,13 +193,18 @@
                         <td>{{$expense->unit_price}}</td>
                         <td>{{$expense->total}}</td>
                         <td>
+                            @if ($expense->receipt)
+                            <a href="{{url('/uploads/receipt/'.$expense->receipt)}}" target="_blank" class="text-primary action-button"><img src="/uploads/receipt/{{$expense->receipt}}" width="80"></a>
+                             @endif
+                        </td>
+                        {{-- <td>
                             <a href="{{url('edit_company/'.$expense->id)}}" class="text-primary action-button">
                                 <i class="las la-edit"></i>
                             </a>
                             <a href="#"  class="text-danger action-button delete-button" data-id="{{$expense->id}}">
                                 <i class="las la-trash"></i>
                             </a>
-                        </td>
+                        </td> --}}
                       
                     </tr>
                     @endforeach

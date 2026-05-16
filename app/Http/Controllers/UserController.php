@@ -11,6 +11,8 @@ use App\Models\{
     Vehicle,
     InsuranceCompany,
     AssignVehicle,
+    expenceCategory,
+    Customer,
     
    
 };
@@ -78,19 +80,19 @@ class UserController extends Controller
         $vehiclemodels = vehiclemodel::get();
         $vehicles=Vehicle::get();
         $insurancecompanies=InsuranceCompany::get();
-        //$assignVehicles=AssignVehicle::get();
+        $customersCount = Customer::count();
 
         $assignVehicles = AssignVehicle::with('rentalCompany', 'vehicle', 'insuranceCompany', 'subInsuranceCompany')->get();
-        return view("user.dashboard", compact('rentalcompanies','insurancecompanies','vehicles','assignVehicles'));
+        return view("user.dashboard", compact('rentalcompanies','insurancecompanies','vehicles','assignVehicles','customersCount'));
     }
     public function addCompany(){
 
         return view("add-company");
     }
-    public function vehicleMakes(){
+    public function manageCategories(){
 
-        $vehiclemakes = vehiclemake::get();
-        return view('vehicleMakes', compact('vehiclemakes'));
+        $expensecategories = expenceCategory::get();
+        return view('expense-categories', compact('expensecategories'));
     }
     public function vehicleModels(){
 

@@ -7,5 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class expenses extends Model
 {
-    use HasFactory;
+    protected $table = 'expenses';
+
+    protected $fillable = [
+        'cat_id',
+        'order_date',
+        'arrival_date',
+        'ending_date',
+        'receipt',
+        'unit',
+        'number_bags_bails',
+        'unit_price',
+        'total',
+    ];
 }

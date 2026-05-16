@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{HomeController,AdminController,UserController,VendorController, ServiceCategoryController, ServiceController, CompanyController, VehicleMakesController,
-     VehicleModelsController, VehicleController, InsuranceCompanyController, SubInsuranceCompanyController, AssignVehicleController, RentalAgreementController, ExpensesController};
+use App\Http\Controllers\{HomeController,AdminController,UserController,VendorController, ServiceCategoryController, ServiceController, CompanyController, ExpenceCategoriesController,
+     VehicleModelsController, VehicleController, InsuranceCompanyController, SubInsuranceCompanyController, AssignVehicleController,ManageCustomersController, IncomeSheetController, RentalAgreementController, ExpensesController};
 // use PDF;
 /*
 |--------------------------------------------------------------------------
@@ -59,17 +59,25 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/manage-expenses', [ExpensesController::class,'allExpenses'])->name('allExpenses');
         Route::post('/submit_company', [CompanyController::class,'creatCompany']);
         Route::post('/submit_expense', [ExpensesController::class,'creatExpense']);
-        Route::get('/vehicle-makes', [UserController::class,'vehicleMakes'])->name('vehicleMakes');
-        Route::get('/vehicle-models', [UserController::class,'vehicleModels'])->name('vehicleModels');
-        Route::post('/submit_make', [VehicleMakesController::class,'addMake']);
+        Route::post('/submit_customer', [ManageCustomersController::class,'creatCustomer']);
+        Route::get('/customer-milk-records', [ManageCustomersController::class,'AllCustomersMilkRecord']);
+        Route::post('/submit_milk_record', [ManageCustomersController::class,'createMilkRecord'])->name('customerMilkRecords');
+        Route::post('update_milk_delivery', [ManageCustomersController::class, 'updateMilkDelivery']);
+        Route::post('save_day_deliveries', [ManageCustomersController::class, 'saveDayDeliveries']);
+        Route::get('/manage-incomesheet', [IncomeSheetController::class,'index'])->name('incomeSheet');
+        Route::get('income-sheet/report', [IncomeSheetController::class, 'generateReport']);
+        Route::post('/submit_income', [IncomeSheetController::class,'createIncome'])->name('submit_income');
+        Route::get('/manage-categories', [UserController::class,'manageCategories'])->name('expenseCategories');
+        Route::get('/manage-customers', [ManageCustomersController::class,'AllCustomers'])->name('Ma');
+        Route::post('/submit_category', [ExpenceCategoriesController::class,'addCategory']);
         Route::post('/submit_model', [VehicleModelsController::class,'addModel']);
         Route::get('/vehicles', [UserController::class,'allVehicles'])->name('allVehicles');
         Route::get('/getModels/{makeId}', [VehicleModelsController::class,'getModel'])->name('getModel');
         Route::post('/submit_vehicle', [VehicleController::class,'addVehicle'])->name('addVehicle');
         Route::post('/submit-insurance-type', [VehicleController::class,'vehicleInsuranceType'])->name('addTypeInsurance');
-        Route::get('/edit_make/{id}', [VehicleMakesController::class,'editMake']);
-        Route::post('/submit_editmake', [VehicleMakesController::class,'updateVehicleMake']);
-        Route::post('/delete_make', [VehicleMakesController::class,'deleteVehicleMake']);
+        Route::get('/edit_cat/{id}', [ExpenceCategoriesController::class,'editCategory']);
+        Route::post('/submit_editcategory', [ExpenceCategoriesController::class,'updatecategory']);
+        Route::post('/delete_category', [ExpenceCategoriesController::class,'deleteExpenseCategory']);
         Route::get('/edit_model/{id}', [VehicleModelsController::class,'editModel']);
         Route::post('/delete_model', [VehicleModelsController::class,'deleteModel']);
         Route::post('/submit_edit_model', [VehicleModelsController::class,'updateVehicleModel']);

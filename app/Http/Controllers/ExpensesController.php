@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Expenses;
+use App\Models\{
 
+    expenceCategory,
+};
 class ExpensesController extends Controller
 {
     public function allExpenses(){
-
+        $expensecategories = expenceCategory::get();
         $expenses = Expenses::get();
-        return view('manage-expenses', compact('expenses'));
+        return view('manage-expenses', compact('expenses','expensecategories'));
     }
     
     public function creatExpense(Request $request){
@@ -39,15 +42,15 @@ class ExpensesController extends Controller
     try {
             $user_id = Auth::user()->id;  /// to get current logged in user id
             $path = '';
-            // if( $request->hasFile('file') ) {
-            //     $file = $request->file('file');
-            //     // Get the Image Name
-            //     $logofileName = time().'.'.$file->getClientOriginalExtension();
-            //     // Set the Filepath 
-            //     $path = public_path('uploads/companylogo') ;
-            //     // Move the file to the upload Folder
-            //     $file = $file->move($path, $logofileName);
-            // }
+            if( $request->hasFile('file') ) {
+                $file = $request->file('file');
+                // Get the Image Name
+                $receiptfileName = time().'.'.$file->getClientOriginalExtension();
+                // Set the Filepath 
+                $path = public_path('uploads/receipt') ;
+                // Move the file to the upload Folder
+                $file = $file->move($path, $receiptfileName);
+            }
             $expense=new Expenses;
             $expense->cat_id = $request->cat;
             $expense->order_date  = $request->order_date;
@@ -56,7 +59,8 @@ class ExpensesController extends Controller
             $expense->unit = $request->unit; 
             $expense->number_bags_bails = $request->nbbs; 
             $expense->unit_price = $request->unit_price; 
-            $expense->total = $request->toatl; 
+            $expense->total = $request->toatl;
+             $expense->receipt = $receiptfileName; 
             if($expense->save()){
                 return redirect('manage-expenses')->with('success', 'Expense is added successfully');
             }else{
@@ -145,4 +149,14 @@ class ExpensesController extends Controller
              return redirect()->url('manage-componies')->with('error', $e->getMessage());
         }       
     }
+
+    //  public function getCompany()
+    // {
+    //     $expensecategories = expenceCategory::get();
+  
+    //     //dd($assignVehicle);
+    //     return view('manage-expenses', compact('expensecategories'));
+
+
+    // }
 }

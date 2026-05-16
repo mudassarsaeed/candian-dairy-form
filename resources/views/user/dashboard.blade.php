@@ -23,7 +23,9 @@
                                 <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
                             </svg>
                         </div>
-                        <h4>{{ count($rentalcompanies);}}</h4>
+                        <h4>
+                            {{ $customersCount }}
+                        </h4>
                         <h3>TOTAL CUSTOMERS</h3>
                     </div>
 
@@ -36,7 +38,12 @@
                                 <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05" />
                             </svg>
                         </div>
-                        <h4>{{ count($insurancecompanies);}}</h4>
+                        <h4>
+                           15 
+                            {{-- {{ count($insurancecompanies);}} --}}
+
+
+                        </h4>
                         <h3>TOTAL COWS</h3>
                     </div>
 
@@ -50,7 +57,11 @@
                                 <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5" />
                             </svg>
                         </div>
-                        <h4>{{ count($vehicles);}}</h4>
+                        <h4>
+                            14
+                            {{-- {{ count($vehicles);}} --}}
+
+                        </h4>
                         <h3>TOTAL CALFS</h3>
                     </div>
 
@@ -63,7 +74,9 @@
                                 <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z" />
                             </svg>
                         </div>
-                        <h4>{{count($assignVehicles);}}</h4>
+                        <h4>
+                            {{count($assignVehicles);}}
+                        </h4>
                         <h3>TOTAL MILK</h3>
                     </div>
 
