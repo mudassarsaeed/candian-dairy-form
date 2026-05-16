@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\customersMilkRecord;
-use App\Models\expenses;
-
+use App\Models\Expenses;
 class IncomeSheetController extends Controller
 {
     public function index()

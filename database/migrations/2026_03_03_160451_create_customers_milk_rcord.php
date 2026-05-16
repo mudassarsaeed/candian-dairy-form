@@ -12,11 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('customers_milk_records', function (Blueprint $table) {
-            $table->id();
-            $table->string('customer_id')->references('id')->on('customers');
-            $table->dateTime('date');
-            $table->string('day_liter');
-            $table->timestamps();
+        $table->id();
+        $table->string('customer_id');
+        $table->datetime('date');
+        $table->string('day_liter');
+        $table->integer('price_day_liter')->nullable();
+        $table->tinyInteger('milk_delivered')->default(0);
+        $table->timestamps();
         });
     }
 

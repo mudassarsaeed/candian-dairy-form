@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class expenses extends Model
+class Expenses extends Model
 {
-    protected $table = 'expenses';
+    protected $table = 'expenses';  
 
     protected $fillable = [
         'cat_id',
