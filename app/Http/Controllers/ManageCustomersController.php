@@ -22,7 +22,8 @@ class ManageCustomersController extends Controller
          // validation
         $request->validate([
             'name'=>'required',
-             'address'=>'required'
+             'address'=>'required',
+              'customer_type' => 'required'
             // 'phone' => 'required',
             // 'price' => 'required',
             // 'liter_per_day' => 'required'
@@ -30,6 +31,7 @@ class ManageCustomersController extends Controller
         ],[
             'name.required' => 'Customer Name is required',
              'address.required' => 'Customer Address is required',
+             'customer_type.required' => 'Customer Type is required',
             // 'phone.required' => 'Customer Phone is required',
             // 'price.required' => 'Customer Price is required',
             // 'liter_per_day.required' => 'Liter Per Day is required',
@@ -47,6 +49,7 @@ class ManageCustomersController extends Controller
             $customer->whatsapp = $request->whatsapp ;
             $customer->price_liter = $request->price ;
             $customer->liter_per_day = $request->liter_per_day ;
+            $customer->customer_type = $request->customer_type;  // add this
            
             if($customer->save()){
                 return redirect('manage-customers')->with('success', 'Customer is added successfully');

@@ -65,16 +65,28 @@
                         </div>
                         
                         <div class="mb-3 col-lg-6">
-                            <label for="exampleFormControlInput1" class="form-label">Price/Liter</label>
-                            <input name="price" type="text" class="form-control"  required placeholder="Enter Price/Liter" data-type="add">
-                            @error('price')
-                            <span class="text-danger">{{$message}}</span>
-                                @enderror   
-                                                       
+
+                         <label>Customer Type:</label>
+                        <select class="form-control" name="customer_type" required>
+                            <option value="">Select Customer Type</option>
+                            <option value="Home Delivery">Home Delivery</option>
+                            <option value="Bulk Pick Up">Bulk Pick Up</option>
+                            <option value="Bulk Delivery">Bulk Delivery</option>
+                        </select>
+                    @error('customer_type')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                                         
                         </div>
                                 
                     </div>
                      <div class="row">
+                        <div class="mb-3 col-lg-6">
+                            <label>Price Per Liter:</label>
+                            <input name="price" type="text" class="form-control"  placeholder="Enter Price Per Liter" data-type="add">
+                            @error('price')
+                            <span class="text-danger">{{$message}}</span>
+                                @enderror                        </div>
                        <div class="mb-3 col-lg-6">
                             <label>Liter Per Day:</label>
                             <input name="liter_per_day" type="text" class="form-control"  placeholder="Enter Liter Per Day" data-type="add">
@@ -138,6 +150,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Customer Type</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Address</th>
@@ -154,6 +167,19 @@
                     @foreach ($customers as $customer)
                     <tr>
                         <td>{{$customer->id}}</td>
+                        <td>
+                            {{-- Badge color based on type --}}
+                            @if($customer->customer_type == 'Home Delivery')
+                                <span class="badge bg-success">Home Delivery</span>
+                            @elseif($customer->customer_type == 'Bulk Pick Up')
+                                <span class="badge bg-warning text-dark">Bulk Pick Up</span>
+                            @elseif($customer->customer_type == 'Bulk Delivery')
+                                <span class="badge bg-primary">Bulk Delivery</span>
+                            @else
+                                <span class="badge bg-secondary">N/A</span>
+                            @endif
+                        </td>
+                        
                         <td>{{$customer->name}}</td>
                         <td>{{$customer->email}}</td>
                         <td>{{$customer->address}}</td>
