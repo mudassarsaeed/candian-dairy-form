@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{HomeController,AdminController,UserController,VendorController, ServiceCategoryController, ServiceController, CompanyController, ExpenceCategoriesController,
-     VehicleModelsController, VehicleController, InsuranceCompanyController, SubInsuranceCompanyController, AssignVehicleController,ManageCustomersController, IncomeSheetController, RentalAgreementController, ExpensesController};
+     VehicleModelsController, VehicleController, InsuranceCompanyController, SubInsuranceCompanyController, AnimalController, AssignVehicleController,ManageCustomersController, IncomeSheetController, RentalAgreementController, ExpensesController};
 // use PDF;
 /*
 |--------------------------------------------------------------------------
@@ -71,6 +71,10 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/manage-customers', [ManageCustomersController::class,'AllCustomers'])->name('Ma');
         Route::post('/submit_category', [ExpenceCategoriesController::class,'addCategory']);
         Route::post('/submit_model', [VehicleModelsController::class,'addModel']);
+        Route::get('manage-animals', [AnimalController::class, 'index']);
+        Route::post('add_animal', [AnimalController::class, 'store']);
+        Route::post('update_animal', [AnimalController::class, 'update']);
+        Route::post('delete_animal', [AnimalController::class, 'destroy']);
         Route::get('/vehicles', [UserController::class,'allVehicles'])->name('allVehicles');
         Route::get('/getModels/{makeId}', [VehicleModelsController::class,'getModel'])->name('getModel');
         Route::post('/submit_vehicle', [VehicleController::class,'addVehicle'])->name('addVehicle');
