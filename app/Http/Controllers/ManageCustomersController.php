@@ -8,6 +8,8 @@ use App\Models\{
 Customer,
 customersMilkRecord,
 };
+use App\Imports\CustomersImport;
+use Maatwebsite\Excel\Facades\Excel;
 class ManageCustomersController extends Controller
 {
      
@@ -173,6 +175,22 @@ public function updateMilkDelivery(Request $request)
             return redirect()->back()->with('error', $e->getMessage());
         }       
     }
+   
+     public function importCustomers(Request $request)
+        {
+            $request->validate([
+                'file' => 'required|mimes:xlsx,xls,csv',
+            ], [
+                'file.required' => 'Please select a file to import',
+                'file.mimes'    => 'Only xlsx, xls, csv files are allowed',
+            ]);
 
-    
+            try {
+                Excel::import(new CustomersImport, $request->file('file'));
+                return redirect('manage-customers')->with('success', 'Customers imported successfully');
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', 'Import failed: ' . $e->getMessage());
+            }
+        }
+            
 }

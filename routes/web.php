@@ -71,6 +71,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/manage-customers', [ManageCustomersController::class,'AllCustomers'])->name('Ma');
         Route::post('/submit_category', [ExpenceCategoriesController::class,'addCategory']);
         Route::post('/submit_model', [VehicleModelsController::class,'addModel']);
+        Route::post('import_customers', [ManageCustomersController::class, 'importCustomers']);
         Route::get('manage-animals', [AnimalController::class, 'index']);
         Route::post('add_animal', [AnimalController::class, 'store']);
         Route::post('update_animal', [AnimalController::class, 'update']);

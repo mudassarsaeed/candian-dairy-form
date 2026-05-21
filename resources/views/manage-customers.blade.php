@@ -206,7 +206,42 @@
 </div>
 
    {{-- delete modal --}}
-    
+   {{-- Import Modal --}}
+<div class="modal fade" id="importModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form method="POST" action="{{ url('import_customers') }}" enctype="multipart/form-data">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Import Customers from Excel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="fw-bold">Select Excel File (.xlsx, .xls, .csv):</label>
+                        <input type="file" name="file" class="form-control" accept=".xlsx,.xls,.csv" required>
+                    </div>
+                    {{-- Column mapping guide --}}
+                    <div class="alert alert-info">
+                        <strong>Excel columns required:</strong><br>
+                        Name, Address, Phone, WhatsApp, Price / Liter (Rs), Liter per day, Customer Type
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="las la-file-import"></i> Import
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- Add import button next to your existing Add Customer button --}}
+<button class="btn btn-success" id="import-btn">
+    <i class="las la-file-excel"></i> Import from Excel
+</button> 
        
     <script>
         //for add 
@@ -230,5 +265,9 @@
             modal.show();
         })
     })
+
+    document.getElementById('import-btn').addEventListener('click', function () {
+    new bootstrap.Modal(document.getElementById('importModal')).show();
+});
     </script>
 @endsection
