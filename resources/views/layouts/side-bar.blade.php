@@ -172,7 +172,7 @@
                    
 
                     
-                    <a class="menu-link {{Request::is('/') ? 'active' : ''}}" href="#">
+                    <a class="menu-link {{Request::is('/') ? 'active' : ''}}" href="{{url('milk-report')}}">
                         <span class="menu-icon">
                             <!--begin::Svg Icon | path: icons/duotone/Design/PenAndRuller.svg-->
                             <span class="svg-icon svg-icon-2">
