@@ -65,11 +65,15 @@ class ManageCustomersController extends Controller
 public function AllCustomersMilkRecord(Request $request)
 {
     $selectedDate = $request->date ?? now()->format('Y-m-d');
-    $customers = Customer::all();
+    $customers    = Customer::all();
 
-    // Use whereDate() instead of where() to handle datetime columns
     $existingRecords = customersMilkRecord::whereDate('date', $selectedDate)
-        ->pluck('milk_delivered', 'customer_id');
+        ->get()
+        ->keyBy('customer_id')
+        ->map(fn($r) => [
+            'milk_delivered' => $r->milk_delivered,
+            'day_liter'      => $r->day_liter,
+        ]);
 
     return view('customer-milk-record', compact('customers', 'selectedDate', 'existingRecords'));
 }
@@ -78,7 +82,7 @@ public function saveDayDeliveries(Request $request)
 {
     try {
         $deliveries = $request->deliveries;
-        $date = $request->date;
+        $date       = $request->date;
 
         if (!$deliveries || !is_array($deliveries)) {
             return response()->json(['success' => false, 'message' => 'No data received'], 400);
@@ -86,17 +90,19 @@ public function saveDayDeliveries(Request $request)
 
         foreach ($deliveries as $delivery) {
             $customer = Customer::find($delivery['customer_id']);
-
             if (!$customer) continue;
 
             $record = customersMilkRecord::where('customer_id', $delivery['customer_id'])
                         ->whereDate('date', $date)
                         ->first();
 
+            // use quantity from request, fallback to customer default
+            $quantity = isset($delivery['quantity']) ? $delivery['quantity'] : $customer->liter_per_day;
+
             if ($record) {
                 $record->update([
                     'milk_delivered'  => $delivery['milk_delivered'],
-                    'day_liter'       => $customer->liter_per_day,
+                    'day_liter'       => $quantity,
                     'price_day_liter' => $customer->price_liter,
                 ]);
             } else {
@@ -104,7 +110,7 @@ public function saveDayDeliveries(Request $request)
                     'customer_id'     => $delivery['customer_id'],
                     'date'            => $date,
                     'milk_delivered'  => $delivery['milk_delivered'],
-                    'day_liter'       => $customer->liter_per_day,
+                    'day_liter'       => $quantity,
                     'price_day_liter' => $customer->price_liter,
                 ]);
             }
@@ -114,10 +120,7 @@ public function saveDayDeliveries(Request $request)
 
     } catch (\Exception $e) {
         \Log::error('saveDayDeliveries error: ' . $e->getMessage());
-        return response()->json([
-            'success' => false,
-            'message' => 'Something went wrong. Please try again.'
-        ], 500);
+        return response()->json(['success' => false, 'message' => 'Something went wrong.'], 500);
     }
 }
 // New method to update milk delivery status

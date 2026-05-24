@@ -73,7 +73,9 @@
         <form method="GET" action="{{ url('customer-milk-records') }}" class="d-flex align-items-center gap-3">
             <label class="fw-bold">Select Date:</label>
             <input type="date" name="date" class="form-control w-auto"
-                value="{{ $selectedDate }}" onchange="this.form.submit()">
+    value="{{ $selectedDate }}"
+    max="{{ now()->format('Y-m-d') }}"
+    onchange="this.form.submit()">
         </form>
     </div>
 
@@ -83,9 +85,10 @@
                 <tr>
                     <th>#</th>
                     <th>Customer Name</th>
-                    <th>Milk Quantity (Liters)</th>
+                   
                     <th>Price Per Liter</th>
                     <th>Amount</th>
+                     <th>Quantity (Liters)</th>
                     <th>Milk Delivered</th>
                 </tr>
             </thead>
@@ -94,21 +97,34 @@
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $customer->name }}</td>
-                    <td>{{ $customer->liter_per_day }}</td>
-                    <td>{{ $customer->price_liter }}</td>
-                    <td>
-                        @if($customer->liter_per_day && $customer->price_liter)
-                            {{ $customer->liter_per_day * $customer->price_liter }}
-                        @else
-                            0
-                        @endif
-                    </td>
+
+                            {{-- Price Per Liter --}}
+                        <td>{{ $customer->price_liter }}</td>
+                         {{-- Amount auto calculated --}}
+                        <td id="amount-{{ $customer->id }}">
+                            @php
+                                $qty = isset($existingRecords[$customer->id])
+                                    ? $existingRecords[$customer->id]['day_liter']
+                                    : $customer->liter_per_day;
+                            @endphp
+                            {{ number_format($qty * $customer->price_liter, 0) }}
+                        </td>
+                       {{-- Editable Quantity --}}
+                        <td>
+                            <input type="number"
+                                class="form-control form-control-sm text-center quantity-input"
+                                style="width: 90px; margin: auto;"
+                                step="0.5" min="0"
+                                data-customer-id="{{ $customer->id }}"
+                                data-price="{{ $customer->price_liter }}"
+                                value="{{ isset($existingRecords[$customer->id]) ? $existingRecords[$customer->id]['day_liter'] : $customer->liter_per_day }}">
+                        </td>
+                    {{-- Milk Delivered Toggle --}}
                     <td>
                         <div class="form-check form-switch d-flex justify-content-center">
                             <input class="form-check-input delivery-toggle" type="checkbox"
                                 data-customer-id="{{ $customer->id }}"
-                                {{-- check if delivery exists and was delivered for this date --}}
-                                {{ isset($existingRecords[$customer->id]) && $existingRecords[$customer->id] ? 'checked' : '' }}>
+                                {{ isset($existingRecords[$customer->id]) && $existingRecords[$customer->id]['milk_delivered'] ? 'checked' : '' }}>
                         </div>
                     </td>
                 </tr>
@@ -135,7 +151,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    // Auto-fill price on customer select
+    // Auto-fill price on customer select (for add modal)
     document.getElementById('customer_select').addEventListener('change', function () {
         const price = this.options[this.selectedIndex].getAttribute('data-price');
         document.getElementById('price_per_liter').value = price ?? '';
@@ -148,16 +164,41 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Save all deliveries button
-       document.getElementById('save-deliveries-btn')?.addEventListener('click', function () {
-        const toggles = document.querySelectorAll('.delivery-toggle');
+    // Update amount cell when quantity changes
+    document.querySelectorAll('.quantity-input').forEach(input => {
+        input.addEventListener('input', function () {
+            const customerId = this.getAttribute('data-customer-id');
+            const price      = parseFloat(this.getAttribute('data-price')) || 0;
+            const qty        = parseFloat(this.value) || 0;
+            const amountCell = document.getElementById('amount-' + customerId);
+
+            // Update amount instantly
+            if (amountCell) {
+                amountCell.textContent = Math.round(qty * price).toLocaleString();
+            }
+
+            // Auto toggle delivery based on quantity
+            const toggle = this.closest('tr').querySelector('.delivery-toggle');
+            if (toggle) {
+                toggle.checked = qty > 0;
+            }
+        });
+    });
+
+    // Save all deliveries button — includes quantity
+    document.getElementById('save-deliveries-btn')?.addEventListener('click', function () {
         const deliveries = [];
 
-        // collect all customers and their delivery status
-        toggles.forEach(toggle => {
+        document.querySelectorAll('.delivery-toggle').forEach(toggle => {
+            const customerId = toggle.getAttribute('data-customer-id');
+            const row        = toggle.closest('tr');
+            const qtyInput   = row.querySelector('.quantity-input');
+            const quantity   = qtyInput ? parseFloat(qtyInput.value) || 0 : 0;
+
             deliveries.push({
-                customer_id:    toggle.getAttribute('data-customer-id'),
-                milk_delivered: toggle.checked ? 1 : 0
+                customer_id:    customerId,
+                milk_delivered: toggle.checked ? 1 : 0,
+                quantity:       quantity
             });
         });
 
@@ -165,46 +206,43 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.disabled = true;
         btn.innerHTML = '<i class="las la-spinner"></i> Saving...';
 
-fetch('{{ url("save_day_deliveries") }}', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-    },
-    body: JSON.stringify({
-        deliveries: deliveries,
-        date: '{{ $selectedDate }}'
-    })
-})
-.then(res => {
-    console.log('Status Code:', res.status); // 👈 check this in console
-    if (!res.ok) {
-        return res.text().then(text => { // 👈 get full error message
-            console.error('Server Error:', text);
-            throw new Error(text);
-        });
-    }
-    return res.json();
-})
-.then(data => {
-    console.log('Response:', data);
-    if (data.success) {
-        btn.innerHTML = '<i class="las la-check"></i> Saved!';
-        btn.classList.replace('btn-success', 'btn-primary');
-
-        setTimeout(() => {
-            btn.innerHTML = '<i class="las la-save"></i> Save Deliveries for {{ \Carbon\Carbon::parse($selectedDate)->format("d M Y") }}';
-            btn.classList.replace('btn-primary', 'btn-success');
+        fetch('{{ url("save_day_deliveries") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                deliveries: deliveries,
+                date: '{{ $selectedDate }}'
+            })
+        })
+        .then(res => {
+            if (!res.ok) {
+                return res.text().then(text => {
+                    console.error('Server Error:', text);
+                    throw new Error(text);
+                });
+            }
+            return res.json();
+        })
+        .then(data => {
+            if (data.success) {
+                btn.innerHTML = '<i class="las la-check"></i> Saved!';
+                btn.classList.replace('btn-success', 'btn-primary');
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="las la-save"></i> Save Deliveries for {{ \Carbon\Carbon::parse($selectedDate)->format("d M Y") }}';
+                    btn.classList.replace('btn-primary', 'btn-success');
+                    btn.disabled = false;
+                }, 2000);
+            }
+        })
+        .catch(err => {
+            console.error('Full Error:', err);
+            btn.innerHTML = '<i class="las la-times"></i> Failed!';
+            btn.classList.replace('btn-success', 'btn-danger');
             btn.disabled = false;
-        }, 2000);
-    }
-})
-.catch(err => {
-    console.error('Full Error:', err); // 👈 now shows real error
-    btn.innerHTML = '<i class="las la-times"></i> Failed!';
-    btn.classList.replace('btn-success', 'btn-danger');
-    btn.disabled = false;
-});
+        });
     });
 
 });
