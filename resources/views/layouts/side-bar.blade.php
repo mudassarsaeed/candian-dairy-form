@@ -155,7 +155,7 @@
                         <span class="menu-title">Manage Animals</span>
                     </a>
                    
-                    <a class="menu-link {{Request::is('/') ? 'active' : ''}}" href="#">
+                    <a class="menu-link {{Request::is('manage-calfs') ? 'active' : ''}}" href="{{url('manage-calfs')}}">
                         <span class="menu-icon">
                             <!--begin::Svg Icon | path: icons/duotone/Design/PenAndRuller.svg-->
                             <span class="svg-icon svg-icon-2">

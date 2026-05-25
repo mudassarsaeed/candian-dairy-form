@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{HomeController,AdminController,UserController,VendorController, ServiceCategoryController, ServiceController, CompanyController, ExpenceCategoriesController,
-     VehicleModelsController, VehicleController, InsuranceCompanyController, MilkReportController, SubInsuranceCompanyController, AnimalController, AssignVehicleController,ManageCustomersController, IncomeSheetController, RentalAgreementController, ExpensesController};
+     VehicleModelsController, VehicleController, InsuranceCompanyController, ManageCalfsController, MilkReportController, SubInsuranceCompanyController, AnimalController, AssignVehicleController,ManageCustomersController, IncomeSheetController, RentalAgreementController, ExpensesController};
 // use PDF;
 /*
 |--------------------------------------------------------------------------
@@ -70,6 +70,10 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('milk-report', [MilkReportController::class, 'index']);
         Route::post('save_animal_milk', [MilkReportController::class, 'saveAnimalMilk']);
         Route::post('save_daily_summary', [MilkReportController::class, 'saveDailySummary']);
+        Route::get('manage-calfs', [ManageCalfsController::class, 'index']);
+        Route::post('add_calf', [ManageCalfsController::class, 'store']);
+        Route::post('update_calf', [ManageCalfsController::class, 'update']);
+        Route::post('delete_calf', [ManageCalfsController::class, 'destroy']);
         Route::get('/manage-categories', [UserController::class,'manageCategories'])->name('expenseCategories');
         Route::get('/manage-customers', [ManageCustomersController::class,'AllCustomers'])->name('Ma');
         Route::post('/submit_category', [ExpenceCategoriesController::class,'addCategory']);
