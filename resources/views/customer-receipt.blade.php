@@ -152,7 +152,7 @@
 
     {{-- Header --}}
     <div class="receipt-header">
-        <img src="{{ asset('assets/images/logo.png') }}" alt="Farm Logo"
+        <img src="{{ asset('assets/images/mainlogo.png') }}" alt="Farm Logo"
             onerror="this.style.display='none'">
         <h2>Canadian Dairy Farm</h2>
         <p>Monthly Milk Receipt</p>
