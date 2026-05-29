@@ -41,19 +41,19 @@
         <div class="col-lg-3 col-6 mb-3">
             <div class="card p-3 text-center border-success">
                 <h6 class="text-muted">Paid</h6>
-                <h3 class="fw-bold text-success">{{ $totalPaid }}</h3>
+                <h3 class="fw-bold text-success" id="summary-paid">{{ $totalPaid }}</h3>
             </div>
         </div>
         <div class="col-lg-3 col-6 mb-3">
             <div class="card p-3 text-center border-danger">
                 <h6 class="text-muted">Unpaid</h6>
-                <h3 class="fw-bold text-danger">{{ $totalUnpaid }}</h3>
+                <h3 class="fw-bold text-danger" id="summary-unpaid">{{ $totalUnpaid }}</h3>
             </div>
         </div>
         <div class="col-lg-3 col-6 mb-3">
             <div class="card p-3 text-center border-warning">
                 <h6 class="text-muted">Total Revenue</h6>
-                <h3 class="fw-bold text-warning">Rs. {{ number_format($totalRev, 0) }}</h3>
+                <h3 class="fw-bold text-warning" id="summary-revenue">Rs. {{ number_format($totalRev, 0) }}</h3>
             </div>
         </div>
     </div>
@@ -156,23 +156,37 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
             })
             .then(res => res.json())
-            .then(data => {
+           .then(data => {
                 if (data.success) {
                     // Update badge
                     const badge = document.querySelector(`.status-badge-${customerId}`);
-                    badge.textContent  = newStatus;
-                    badge.className    = `badge status-badge-${customerId} ${newStatus === 'Paid' ? 'bg-success' : 'bg-danger'}`;
+                    badge.textContent = newStatus;
+                    badge.className   = `badge status-badge-${customerId} ${newStatus === 'Paid' ? 'bg-success' : 'bg-danger'}`;
 
                     // Update button
-                    this.dataset.status    = newStatus;
-                    this.textContent       = newStatus === 'Paid' ? 'Mark Unpaid' : 'Mark Paid';
-                    this.className         = `btn btn-sm ${newStatus === 'Paid' ? 'btn-warning' : 'btn-success'} toggle-status-btn me-1`;
+                    this.dataset.status = newStatus;
+                    this.textContent    = newStatus === 'Paid' ? 'Mark Unpaid' : 'Mark Paid';
+                    this.className      = `btn btn-sm ${newStatus === 'Paid' ? 'btn-warning' : 'btn-success'} toggle-status-btn me-1`;
+
+                    // ✅ Simple math — just add or subtract 1
+                    const paidEl   = document.getElementById('summary-paid');
+                    const unpaidEl = document.getElementById('summary-unpaid');
+
+                    let currentPaid   = parseInt(paidEl.textContent);
+                    let currentUnpaid = parseInt(unpaidEl.textContent);
+
+                    if (newStatus === 'Paid') {
+                        paidEl.textContent   = currentPaid + 1;
+                        unpaidEl.textContent = currentUnpaid - 1;
+                    } else {
+                        paidEl.textContent   = currentPaid - 1;
+                        unpaidEl.textContent = currentUnpaid + 1;
+                    }
                 }
-            })
+         })
             .catch(err => console.error(err));
         });
     });
-
 });
 </script>
 @endsection
