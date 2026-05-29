@@ -10,6 +10,7 @@ class AdminController extends Controller
 {
     public function index()
     {
+         dd("hello");
         try {
            $serviceCategories = ServiceCategory::all();
        

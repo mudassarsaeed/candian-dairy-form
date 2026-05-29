@@ -13,14 +13,17 @@ use App\Models\{
     AssignVehicle,
     expenceCategory,
     Customer,
-    
-   
+    Animal,
+    Calf,   
+   AnimalMilkRecord,
 };
+
 
 class UserController extends Controller
 {
     public function index()
     {
+       
         try {
             //Related to transactions
             $transactions_today = 0;
@@ -81,9 +84,12 @@ class UserController extends Controller
         $vehicles=Vehicle::get();
         $insurancecompanies=InsuranceCompany::get();
         $customersCount = Customer::count();
+        $animalsCount   = Animal::count();
+        $calfsCount     = Calf::count();
+        $todayMilk      = AnimalMilkRecord::whereDate('date', today())->sum('milk_quantity');
 
         $assignVehicles = AssignVehicle::with('rentalCompany', 'vehicle', 'insuranceCompany', 'subInsuranceCompany')->get();
-        return view("user.dashboard", compact('rentalcompanies','insurancecompanies','vehicles','assignVehicles','customersCount'));
+        return view("user.dashboard", compact('rentalcompanies','insurancecompanies','vehicles','assignVehicles','customersCount','animalsCount','calfsCount','todayMilk'));
     }
     public function addCompany(){
 
