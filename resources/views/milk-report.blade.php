@@ -33,19 +33,19 @@
         <div class="col-lg-3 col-6 mb-3">
             <div class="card p-3 text-center border-success">
                 <h6 class="text-muted">Total Sold</h6>
-                <h3 class="fw-bold text-success">{{ $totalSold }} L</h3>
+                <h3 class="fw-bold text-success" id="card-total-sold">{{ $totalSold }} L</h3>
             </div>
         </div>
         <div class="col-lg-3 col-6 mb-3">
             <div class="card p-3 text-center border-warning">
                 <h6 class="text-muted">Total Consumed</h6>
-                <h3 class="fw-bold text-warning">{{ $totalConsumed }} L</h3>
+                <h3 class="fw-bold text-warning" id="card-total-consumed">{{ $totalConsumed }} L</h3>
             </div>
         </div>
         <div class="col-lg-3 col-6 mb-3">
             <div class="card p-3 text-center {{ $netRemaining >= 0 ? 'border-info' : 'border-danger' }}">
                 <h6 class="text-muted">Net Remaining</h6>
-                <h3 class="fw-bold {{ $netRemaining >= 0 ? 'text-info' : 'text-danger' }}">{{ $netRemaining }} L</h3>
+                <h3 class="fw-bold {{ $netRemaining >= 0 ? 'text-info' : 'text-danger' }}" id="card-net-remaining">{{ $netRemaining }} L</h3>
             </div>
         </div>
     </div>
@@ -339,6 +339,24 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.success) {
                 btn.innerHTML = '<i class="las la-check"></i> Saved!';
                 btn.classList.replace('btn-warning', 'btn-success');
+
+                // Update Total Consumed card
+                const farmUse  = parseFloat(document.getElementById('farm-use').value) || 0;
+                const samples  = parseFloat(document.getElementById('samples').value)  || 0;
+                const waste    = parseFloat(document.getElementById('waste').value)    || 0;
+                const totalConsumed = farmUse + samples + waste;
+
+                document.getElementById('card-total-consumed').textContent = totalConsumed.toFixed(2) + ' L';
+
+                // Update Net Remaining card
+                const totalProduced  = parseFloat(document.getElementById('card-total-produced').textContent) || 0;
+                const totalSold      = parseFloat(document.getElementById('card-total-sold').textContent)     || 0;
+                const netRemaining   = totalProduced - totalSold - totalConsumed;
+
+                const netCard = document.getElementById('card-net-remaining');
+                netCard.textContent = netRemaining.toFixed(2) + ' L';
+                netCard.className   = netRemaining >= 0 ? 'fw-bold text-info' : 'fw-bold text-danger';
+
                 setTimeout(() => {
                     btn.innerHTML = '<i class="las la-save"></i> Save Consumption';
                     btn.classList.replace('btn-success', 'btn-warning');
