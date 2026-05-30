@@ -51,17 +51,21 @@ License: For each use you must have a valid license purchased only from above li
 <!--end::Head-->
 <!--begin::Body-->
 
-<body id="kt_body" class="header-fixed header-tablet-and-mobile-fixed toolbar-enabled toolbar-fixed toolbar-tablet-and-mobile-fixed aside-enabled aside-fixed" style="--kt-toolbar-height:55px;--kt-toolbar-height-tablet-and-mobile:55px">
+<body id="kt_body" 
+    class="header-fixed header-tablet-and-mobile-fixed toolbar-enabled toolbar-fixed toolbar-tablet-and-mobile-fixed {{ Auth::user()->type === 'Admin' ? 'aside-enabled aside-fixed' : '' }}" 
+    style="--kt-toolbar-height:55px;--kt-toolbar-height-tablet-and-mobile:55px">
     <!--begin::Main-->
     <!--begin::Root-->
     <div class="d-flex flex-column flex-root">
         <!--begin::Page-->
         <div class="page d-flex flex-row flex-column-fluid">
+            @if(Auth::user()->type === 'Admin')
             <!--begin::Aside-->
             @include('layouts.side-bar')
             <!--end::Aside-->
+            @endif
             <!--begin::Wrapper-->
-            <div class="wrapper d-flex flex-column flex-row-fluid" id="kt_wrapper">
+            <div class="wrapper d-flex flex-column flex-row-fluid {{ Auth::user()->type !== 'Admin' ? 'ms-0' : '' }}" id="kt_wrapper">
                 <!--begin::Header-->
                 @include('layouts.top-navbar')
                 <!--end::Header-->
