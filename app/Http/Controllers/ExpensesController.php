@@ -21,20 +21,20 @@ class ExpensesController extends Controller
 {
     $request->validate([
         'cat'        => 'required',
-        'order_date' => 'required',
-        'arival_date'=> 'required',
-        'enddate'    => 'required',
-        'unit'       => 'required',
+        // 'order_date' => 'required',
+        // 'arival_date'=> 'required',
+        // 'enddate'    => 'required',
+        // 'unit'       => 'required',
         'unit_price' => 'required',
         'toatl'      => 'required',
         // validate other_category only if Other is selected
         'other_category' => 'required_if:cat,other',
     ], [
         'cat.required'              => 'Category is required',
-        'order_date.required'       => 'Order Date is required',
-        'arival_date.required'      => 'Arrival Date is required',
-        'enddate.required'          => 'Ending Date is required',
-        'unit.required'             => 'Unit is required',
+        // 'order_date.required'       => 'Order Date is required',
+        // 'arival_date.required'      => 'Arrival Date is required',
+        // 'enddate.required'          => 'Ending Date is required',
+        // 'unit.required'             => 'Unit is required',
         'unit_price.required'       => 'Unit Price is required',
         'toatl.required'            => 'Total is required',
         'other_category.required_if'=> 'Please specify the other category',

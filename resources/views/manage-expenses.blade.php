@@ -45,7 +45,7 @@
                     </div>
                     <div class="mb-3 col-lg-6">
                         <label>Order Date:</label>
-                        <input type="date" class="form-control" name="order_date" required placeholder="Enter Order Date">
+                        <input type="date" class="form-control" name="order_date"  placeholder="Enter Order Date">
                         @error('order_date')
                         <span class="text-danger">{{$message}}</span>
                         @enderror
@@ -55,14 +55,14 @@
                     <div class="row">
                         <div class="mb-3 col-lg-6">
                             <label>Arrival Date:</label>
-                            <input name="arival_date" type="date" class="form-control" required placeholder="Enter Arrival Date" data-type="add">
+                            <input name="arival_date" type="date" class="form-control"  placeholder="Enter Arrival Date" data-type="add">
                             @error('arival_date')
                             <span class="text-danger">{{$message}}</span>
                             @enderror
                         </div>
                         <div class="mb-3 col-lg-6">
                             <label>Ending Date:</label>
-                            <input name="enddate" type="date" class="form-control" required placeholder="Enter Ending Date" data-type="add">
+                            <input name="enddate" type="date" class="form-control"  placeholder="Enter Ending Date" data-type="add">
                             @error('enddate')
                             <span class="text-danger">{{$message}}</span>
                                 @enderror                        </div>
@@ -82,7 +82,7 @@
                         
                         <div class="mb-3 col-lg-6">
                             <label for="exampleFormControlInput1" class="form-label">Number of Bags/Bails</label>
-                            <input name="nbbs" type="text" class="form-control"  required placeholder="Enter Bags/Bails" data-type="add">
+                            <input name="nbbs" type="text" class="form-control"   placeholder="Enter Bags/Bails" data-type="add">
                             @error('bags')
                             <span class="text-danger">{{$message}}</span>
                                 @enderror   
@@ -100,7 +100,7 @@
                         
                         <div class="mb-3 col-lg-6">
                             <label for="exampleFormControlInput1" class="form-label">Unit Price</label>
-                             <input name="unit_price" type="text" class="form-control" required placeholder="Enter Unit Price" data-type="add">
+                             <input name="unit_price" type="text" class="form-control"  required placeholder="Enter Unit Price" data-type="add">
                             @error('unit_price')
                             <span class="text-danger">{{$message}}</span>
                                 @enderror        
