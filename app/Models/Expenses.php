@@ -19,6 +19,7 @@ class Expenses extends Model
         'number_bags_bails',
         'unit_price',
         'total',
+        'other_category',  // add this
     ];
      public function category()
     {

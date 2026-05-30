@@ -17,59 +17,61 @@ class ExpensesController extends Controller
         return view('manage-expenses', compact('expenses','expensecategories'));
     }
     
-    public function creatExpense(Request $request){
-   // dd($request->all());
+ public function creatExpense(Request $request)
+{
+    $request->validate([
+        'cat'        => 'required',
+        'order_date' => 'required',
+        'arival_date'=> 'required',
+        'enddate'    => 'required',
+        'unit'       => 'required',
+        'unit_price' => 'required',
+        'toatl'      => 'required',
+        // validate other_category only if Other is selected
+        'other_category' => 'required_if:cat,other',
+    ], [
+        'cat.required'              => 'Category is required',
+        'order_date.required'       => 'Order Date is required',
+        'arival_date.required'      => 'Arrival Date is required',
+        'enddate.required'          => 'Ending Date is required',
+        'unit.required'             => 'Unit is required',
+        'unit_price.required'       => 'Unit Price is required',
+        'toatl.required'            => 'Total is required',
+        'other_category.required_if'=> 'Please specify the other category',
+    ]);
 
-         // validation
-        $request->validate([
-            'cat'=>'required',
-            'order_date'=>'required',
-            'arival_date'=>'required',
-            'enddate' => 'required',
-            'unit' => 'required',
-            'unit_price' => 'required',
-            'toatl' => 'required'
-        ],[
-            'cat.required' => 'Category is required',
-            'order_date.required' => 'Rrder Date is required',
-            'arival_date.required' => 'Rrival Date is required',
-            'enddate.required' => 'Ending Date is required',
-            'unit.required' => 'Unit is required',
-            'unit_price.required' => 'Unit Price is required',
-            'toatl.required' => 'Total is required',
-        ]);
-    // error handling using try and catch
     try {
-            $user_id = Auth::user()->id;  /// to get current logged in user id
-            $path = '';
-            if( $request->hasFile('file') ) {
-                $file = $request->file('file');
-                // Get the Image Name
-                $receiptfileName = time().'.'.$file->getClientOriginalExtension();
-                // Set the Filepath 
-                $path = public_path('uploads/receipt') ;
-                // Move the file to the upload Folder
-                $file = $file->move($path, $receiptfileName);
-            }
-            $expense=new Expenses;
-            $expense->cat_id = $request->cat;
-            $expense->order_date  = $request->order_date;
-            $expense->arrival_date =  $request->arival_date;
-            $expense->ending_date = $request->enddate; 
-            $expense->unit = $request->unit; 
-            $expense->number_bags_bails = $request->nbbs; 
-            $expense->unit_price = $request->unit_price; 
-            $expense->total = $request->toatl;
-             $expense->receipt = $receiptfileName; 
-            if($expense->save()){
-                return redirect('manage-expenses')->with('success', 'Expense is added successfully');
-            }else{
-                return redirect()->back()->with('error', 'Expense not added');
-            }
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage());
-        }       
+        $user_id = Auth::user()->id;
+        $receiptfileName = null;
+
+        if ($request->hasFile('file')) {
+            $file            = $request->file('file');
+            $receiptfileName = time().'.'.$file->getClientOriginalExtension();
+            $path            = public_path('uploads/receipt');
+            $file->move($path, $receiptfileName);
+        }
+
+        $expense                  = new Expenses;
+        $expense->cat_id          = $request->cat === 'other' ? null : $request->cat;
+        $expense->other_category  = $request->cat === 'other' ? $request->other_category : null;
+        $expense->order_date      = $request->order_date;
+        $expense->arrival_date    = $request->arival_date;
+        $expense->ending_date     = $request->enddate;
+        $expense->unit            = $request->unit;
+        $expense->number_bags_bails = $request->nbbs;
+        $expense->unit_price      = $request->unit_price;
+        $expense->total           = $request->toatl;
+        $expense->receipt         = $receiptfileName;
+
+        if ($expense->save()) {
+            return redirect('manage-expenses')->with('success', 'Expense added successfully');
+        } else {
+            return redirect()->back()->with('error', 'Expense not added');
+        }
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', $e->getMessage());
     }
+}
 
     public function editCompany($id){
 

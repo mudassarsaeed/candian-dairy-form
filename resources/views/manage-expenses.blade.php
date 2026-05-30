@@ -24,13 +24,24 @@
                 <div class="modal-body">
                     <div class="row">
                     <div class="mb-3 col-lg-6">
-                        <label>Category:</label><br>
-                         <select name="cat" id="cat" style="width: 160px;">
+                        <label>Category:</label>
+                        <select name="cat" id="cat" class="form-control" required>
                             <option value="" selected>Select Category</option>
-                            @foreach ($expensecategories   as $expensecategory )
-                                <option value="{{$expensecategory->id}}">{{$expensecategory->name}}</option>
+                            @foreach ($expensecategories as $expensecategory)
+                                <option value="{{ $expensecategory->id }}">{{ $expensecategory->name }}</option>
                             @endforeach
+                            <option value="other">Other</option>
                         </select>
+                    </div>
+
+                    {{-- Other Category field - hidden by default --}}
+                    <div class="mb-3 col-lg-6" id="other-category-field" style="display:none;">
+                        <label>Specify Other Category: <span class="text-danger">*</span></label>
+                        <input type="text" name="other_category" id="other_category"
+                            class="form-control" placeholder="Enter category name">
+                        @error('other_category')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="mb-3 col-lg-6">
                         <label>Order Date:</label>
@@ -184,7 +195,15 @@
                     @foreach ($expenses as $expense)
                     <tr>
                         <td>{{$expense->id}}</td>
-                        <td>{{ $expense->category->name ?? 'N/A' }}</td>
+                        <td>
+                        @if($expense->cat_id)
+                            {{ $expense->category->name ?? 'N/A' }}
+                        @elseif($expense->other_category)
+                            {{ $expense->other_category }} <span class="badge bg-secondary">Other</span>
+                        @else
+                            N/A
+                        @endif
+                        </td>
                         <td>{{$expense->order_date}}</td>
                         <td>{{$expense->arrival_date}}</td>
                         <td>{{$expense->ending_date}}</td>
@@ -239,5 +258,20 @@
             modal.show();
         })
     })
+
+    // Show/hide other category field
+document.getElementById('cat').addEventListener('change', function () {
+    const otherField = document.getElementById('other-category-field');
+    const otherInput = document.getElementById('other_category');
+
+    if (this.value === 'other') {
+        otherField.style.display = 'block';
+        otherInput.setAttribute('required', 'required');
+    } else {
+        otherField.style.display = 'none';
+        otherInput.removeAttribute('required');
+        otherInput.value = '';
+    }
+});
     </script>
 @endsection
